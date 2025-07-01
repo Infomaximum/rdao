@@ -128,7 +128,7 @@ public class ColumnFamilyConfigTest {
 
         final long writeBufferSize = 4L * SizeUnit.MB;
         Map<String, ColumnFamilyConfig> configuredColumnFamilies = new HashMap<String, ColumnFamilyConfig>() {{
-            put("^com\\.infomaximum\\.subsystem\\.test$", ColumnFamilyConfig.newBuilder().withWriteBufferSize(writeBufferSize).build());
+            put("^com\\.infomaximum\\.subsystem\\.test$", ColumnFamilyConfig.builder().withWriteBufferSize(writeBufferSize).build());
         }};
 
         try (RocksDBProvider rocksDBProvider = new RocksDataBaseBuilder()
@@ -173,7 +173,7 @@ public class ColumnFamilyConfigTest {
 
         final long writeBufferSize = 4L * SizeUnit.MB;
         Map<String, ColumnFamilyConfig> configuredColumnFamilies = new HashMap<String, ColumnFamilyConfig>() {{
-            put("^com\\.infomaximum\\.subsystem\\.test.*$", ColumnFamilyConfig.newBuilder().withWriteBufferSize(writeBufferSize).build());
+            put("^com\\.infomaximum\\.subsystem\\.test.*$", ColumnFamilyConfig.builder().withWriteBufferSize(writeBufferSize).build());
         }};
 
         try (RocksDBProvider rocksDBProvider = new RocksDataBaseBuilder()

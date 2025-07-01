@@ -1,5 +1,7 @@
 package com.infomaximum.rocksdb.options.columnfamily;
 
+import org.rocksdb.CompactionPriority;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,8 +22,12 @@ public class ColumnFamilyConfig implements Serializable {
     final Long maxSuccessiveMerges;
     final Long softPendingCompactionBytesLimit;
     final Integer level0FileNumCompactionTrigger;
+    final Integer level0SlowdownWritesTrigger;
     final Integer level0StopWritesTrigger;
     final Integer maxWriteBufferNumberToMaintain;
+    final Integer targetFileSizeMultiplier;
+    final Double maxBytesForLevelMultiplier;
+    final CompactionPriority compactionPriority;
 
     private ColumnFamilyConfig(Builder builder) {
         writeBufferSize = builder.writeBufferSize;
@@ -39,14 +45,17 @@ public class ColumnFamilyConfig implements Serializable {
         maxSuccessiveMerges = builder.maxSuccessiveMerges;
         softPendingCompactionBytesLimit = builder.softPendingCompactionBytesLimit;
         level0FileNumCompactionTrigger = builder.level0FileNumCompactionTrigger;
+        level0SlowdownWritesTrigger = builder.level0SlowdownWritesTrigger;
         level0StopWritesTrigger = builder.level0StopWritesTrigger;
         maxWriteBufferNumberToMaintain = builder.maxWriteBufferNumberToMaintain;
+        targetFileSizeMultiplier = builder.targetFileSizeMultiplier;
+        maxBytesForLevelMultiplier = builder.maxBytesForLevelMultiplier;
+        compactionPriority = builder.compactionPriority;
     }
 
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
-
 
     public Long getWriteBufferSize() {
         return writeBufferSize;
@@ -108,6 +117,10 @@ public class ColumnFamilyConfig implements Serializable {
         return level0FileNumCompactionTrigger;
     }
 
+    public Integer getLevel0SlowdownWritesTrigger() {
+        return level0SlowdownWritesTrigger;
+    }
+
     public Integer getLevel0StopWritesTrigger() {
         return level0StopWritesTrigger;
     }
@@ -116,119 +129,103 @@ public class ColumnFamilyConfig implements Serializable {
         return maxWriteBufferNumberToMaintain;
     }
 
-    public Boolean isContainWriteBufferSize() {
+    public Integer getTargetFileSizeMultiplier() {
+        return targetFileSizeMultiplier;
+    }
+
+    public Double getMaxBytesForLevelMultiplier() {
+        return maxBytesForLevelMultiplier;
+    }
+
+    public CompactionPriority getCompactionPriority() {
+        return compactionPriority;
+    }
+
+
+    public boolean isContainWriteBufferSize() {
         return Objects.nonNull(writeBufferSize);
     }
 
-    public Boolean isContainMaxWriteBufferNumber() {
+    public boolean isContainMaxWriteBufferNumber() {
         return Objects.nonNull(maxWriteBufferNumber);
     }
 
-    public Boolean isContainMinWriteBufferNumberToMerge() {
+    public boolean isContainMinWriteBufferNumberToMerge() {
         return Objects.nonNull(minWriteBufferNumberToMerge);
     }
 
-    public Boolean isContainNumLevels() {
+    public boolean isContainNumLevels() {
         return Objects.nonNull(numLevels);
     }
 
-    public Boolean isContainTargetFileSizeBase() {
+    public boolean isContainTargetFileSizeBase() {
         return Objects.nonNull(targetFileSizeBase);
     }
 
-    public Boolean isContainMaxBytesForLevelBase() {
+    public boolean isContainMaxBytesForLevelBase() {
         return Objects.nonNull(maxBytesForLevelBase);
     }
 
-    public Boolean isContainEnableLevelCompactionDynamicLevelBytes() {
+    public boolean isContainEnableLevelCompactionDynamicLevelBytes() {
         return Objects.nonNull(enableLevelCompactionDynamicLevelBytes);
     }
 
-    public Boolean isContainMaxCompactionBytes() {
+    public boolean isContainMaxCompactionBytes() {
         return Objects.nonNull(maxCompactionBytes);
     }
 
-    public Boolean isContainArenaBlockSize() {
+    public boolean isContainArenaBlockSize() {
         return Objects.nonNull(arenaBlockSize);
     }
 
-    public Boolean isContainDisableAutoCompactions() {
+    public boolean isContainDisableAutoCompactions() {
         return Objects.nonNull(disableAutoCompactions);
     }
 
-    public Boolean isContainMaxSequentialSkipInIterations() {
+    public boolean isContainMaxSequentialSkipInIterations() {
         return Objects.nonNull(maxSequentialSkipInIterations);
     }
 
-    public Boolean isContainMemtablePrefixBloomSizeRatio() {
+    public boolean isContainMemtablePrefixBloomSizeRatio() {
         return Objects.nonNull(memtablePrefixBloomSizeRatio);
     }
 
-    public Boolean isContainMaxSuccessiveMerges() {
+    public boolean isContainMaxSuccessiveMerges() {
         return Objects.nonNull(maxSuccessiveMerges);
     }
 
-    public Boolean isContainSoftPendingCompactionBytesLimit() {
+    public boolean isContainSoftPendingCompactionBytesLimit() {
         return Objects.nonNull(softPendingCompactionBytesLimit);
     }
 
-    public Boolean isContainLevel0FileNumCompactionTrigger() {
+    public boolean isContainLevel0FileNumCompactionTrigger() {
         return Objects.nonNull(level0FileNumCompactionTrigger);
     }
 
-    public Boolean isContainLevel0StopWritesTrigger() {
+    public boolean isContainLevel0SlowdownWritesTrigger() {
+        return Objects.nonNull(level0SlowdownWritesTrigger);
+    }
+
+    public boolean isContainLevel0StopWritesTrigger() {
         return Objects.nonNull(level0StopWritesTrigger);
     }
 
-    public Boolean isContainMaxWriteBufferNumberToMaintain() {
+    public boolean isContainMaxWriteBufferNumberToMaintain() {
         return Objects.nonNull(maxWriteBufferNumberToMaintain);
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ColumnFamilyConfig that = (ColumnFamilyConfig) o;
-        return Objects.equals(writeBufferSize, that.writeBufferSize)
-                && Objects.equals(maxWriteBufferNumber, that.maxWriteBufferNumber)
-                && Objects.equals(minWriteBufferNumberToMerge, that.minWriteBufferNumberToMerge)
-                && Objects.equals(numLevels, that.numLevels)
-                && Objects.equals(targetFileSizeBase, that.targetFileSizeBase)
-                && Objects.equals(maxBytesForLevelBase, that.maxBytesForLevelBase)
-                && Objects.equals(enableLevelCompactionDynamicLevelBytes, that.enableLevelCompactionDynamicLevelBytes)
-                && Objects.equals(maxCompactionBytes, that.maxCompactionBytes)
-                && Objects.equals(arenaBlockSize, that.arenaBlockSize)
-                && Objects.equals(disableAutoCompactions, that.disableAutoCompactions)
-                && Objects.equals(maxSequentialSkipInIterations, that.maxSequentialSkipInIterations)
-                && Objects.equals(memtablePrefixBloomSizeRatio, that.memtablePrefixBloomSizeRatio)
-                && Objects.equals(maxSuccessiveMerges, that.maxSuccessiveMerges)
-                && Objects.equals(softPendingCompactionBytesLimit, that.softPendingCompactionBytesLimit)
-                && Objects.equals(level0FileNumCompactionTrigger, that.level0FileNumCompactionTrigger)
-                && Objects.equals(level0StopWritesTrigger, that.level0StopWritesTrigger)
-                && Objects.equals(maxWriteBufferNumberToMaintain, that.maxWriteBufferNumberToMaintain);
+    public boolean isContainTargetFileSizeMultiplier() {
+        return Objects.nonNull(targetFileSizeMultiplier);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(writeBufferSize,
-                maxWriteBufferNumber,
-                minWriteBufferNumberToMerge,
-                numLevels,
-                targetFileSizeBase,
-                maxBytesForLevelBase,
-                enableLevelCompactionDynamicLevelBytes,
-                maxCompactionBytes,
-                arenaBlockSize,
-                disableAutoCompactions,
-                maxSequentialSkipInIterations,
-                memtablePrefixBloomSizeRatio,
-                maxSuccessiveMerges,
-                softPendingCompactionBytesLimit,
-                level0FileNumCompactionTrigger,
-                level0StopWritesTrigger,
-                maxWriteBufferNumberToMaintain);
+    public boolean isContainMaxBytesForLevelMultiplier() {
+        return Objects.nonNull(maxBytesForLevelMultiplier);
     }
+
+    public boolean isContainCompactionPriority() {
+        return Objects.nonNull(compactionPriority);
+    }
+
 
     public static final class Builder {
         private Long writeBufferSize;
@@ -246,8 +243,12 @@ public class ColumnFamilyConfig implements Serializable {
         private Long maxSuccessiveMerges;
         private Long softPendingCompactionBytesLimit;
         private Integer level0FileNumCompactionTrigger;
+        private Integer level0SlowdownWritesTrigger;
         private Integer level0StopWritesTrigger;
         private Integer maxWriteBufferNumberToMaintain;
+        private Integer targetFileSizeMultiplier;
+        private Double maxBytesForLevelMultiplier;
+        private CompactionPriority compactionPriority;
 
         private Builder() {
         }
@@ -327,6 +328,11 @@ public class ColumnFamilyConfig implements Serializable {
             return this;
         }
 
+        public Builder withLevel0SlowdownWritesTrigger(Integer level0SlowdownWritesTrigger) {
+            this.level0SlowdownWritesTrigger = level0SlowdownWritesTrigger;
+            return this;
+        }
+
         public Builder withLevel0StopWritesTrigger(Integer level0StopWritesTrigger) {
             this.level0StopWritesTrigger = level0StopWritesTrigger;
             return this;
@@ -334,6 +340,21 @@ public class ColumnFamilyConfig implements Serializable {
 
         public Builder withMaxWriteBufferNumberToMaintain(Integer maxWriteBufferNumberToMaintain) {
             this.maxWriteBufferNumberToMaintain = maxWriteBufferNumberToMaintain;
+            return this;
+        }
+
+        public Builder withTargetFileSizeMultiplier(Integer targetFileSizeMultiplier) {
+            this.targetFileSizeMultiplier = targetFileSizeMultiplier;
+            return this;
+        }
+
+        public Builder withMaxBytesForLevelMultiplier(Double maxBytesForLevelMultiplier) {
+            this.maxBytesForLevelMultiplier = maxBytesForLevelMultiplier;
+            return this;
+        }
+
+        public Builder withCompactionPriority(CompactionPriority compactionPriority) {
+            this.compactionPriority = compactionPriority;
             return this;
         }
 

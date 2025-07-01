@@ -18,7 +18,7 @@ public class ColumnFamilyConfigMapper {
 
     public static ColumnFamilyConfig fromRocksDbOpt(ColumnFamilyOptions from) {
         Objects.requireNonNull(from);
-        return ColumnFamilyConfig.newBuilder()
+        return ColumnFamilyConfig.builder()
                 .withArenaBlockSize(from.arenaBlockSize())
                 .withWriteBufferSize(from.writeBufferSize())
                 .withMaxWriteBufferNumber(from.maxWriteBufferNumber())
@@ -37,6 +37,10 @@ public class ColumnFamilyConfigMapper {
                 .withLevel0FileNumCompactionTrigger(from.level0FileNumCompactionTrigger())
                 .withLevel0StopWritesTrigger(from.level0StopWritesTrigger())
                 .withMaxWriteBufferNumberToMaintain(from.maxWriteBufferNumberToMaintain())
+                .withLevel0SlowdownWritesTrigger(from.level0SlowdownWritesTrigger())
+                .withTargetFileSizeMultiplier(from.targetFileSizeMultiplier())
+                .withMaxBytesForLevelMultiplier(from.maxBytesForLevelMultiplier())
+                .withCompactionPriority(from.compactionPriority())
                 .build();
     }
 
@@ -96,6 +100,20 @@ public class ColumnFamilyConfigMapper {
         }
         if (from.isContainMaxWriteBufferNumberToMaintain()) {
             to.setMaxWriteBufferNumberToMaintain(from.getMaxWriteBufferNumberToMaintain());
+        }
+        if (from.isContainLevel0SlowdownWritesTrigger()) {
+            to.setLevel0SlowdownWritesTrigger(from.getLevel0SlowdownWritesTrigger());
+        }
+        if (from.isContainTargetFileSizeMultiplier()) {
+            to.setTargetFileSizeMultiplier(from.getTargetFileSizeMultiplier());
+        }
+
+        if (from.isContainMaxBytesForLevelMultiplier()) {
+            to.setMaxBytesForLevelMultiplier(from.getMaxBytesForLevelMultiplier());
+        }
+
+        if (from.isContainCompactionPriority()) {
+            to.setCompactionPriority(from.getCompactionPriority());
         }
     }
 }

@@ -8,6 +8,8 @@ import com.infomaximum.rocksdb.options.columnfamily.ColumnFamilyConfig;
 import com.infomaximum.rocksdb.options.columnfamily.ColumnFamilyConfigService;
 import org.rocksdb.*;
 import org.rocksdb.util.SizeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +25,7 @@ public class RocksDataBaseBuilder {
 
     private Path path;
     private ColumnFamilyConfigService columnFamilyConfigService;
+    private final static Logger log = LoggerFactory.getLogger(RocksDataBaseBuilder.class);
 
 
     public RocksDataBaseBuilder withPath(Path path) {
@@ -52,7 +55,6 @@ public class RocksDataBaseBuilder {
                 ColumnFamilyHandle columnFamilyHandle = columnFamilyHandles.get(i);
                 columnFamilies.put(columnFamilyName, columnFamilyHandle);
             }
-
             return new RocksDBProvider(rocksDB, columnFamilies);
         } catch (RocksDBException e) {
             throw new DatabaseException(e);
@@ -61,17 +63,61 @@ public class RocksDataBaseBuilder {
 
     private DBOptions buildOptions() throws RocksDBException {
         final String optionsFilePath = path.toString() + ".ini";
-
+        final Path fileName = path.getFileName();
         DBOptions options = new DBOptions();
-        if (Files.exists(Paths.get(optionsFilePath))) {
-            final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
-            OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
-        } else {
-            options
-                    .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
-                    .setMaxTotalWalSize(100L * SizeUnit.MB);
-        }
 
+        if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_activity_2025")) {
+            if (Files.exists(Paths.get(optionsFilePath))) {
+                final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
+                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+            } else {
+                options
+                        .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
+                        .setLogger(new org.rocksdb.Logger(options) {
+                            @Override
+                            protected void log(InfoLogLevel infoLogLevel, String logMsg) {
+                                log.info("rocksdb:log:activity_2025: {}: {}", infoLogLevel, logMsg);
+                            }
+                        })
+                        .setMaxTotalWalSize(64L * 7 * SizeUnit.MB)
+                        .setMaxBackgroundJobs(12)
+                        .setMaxBackgroundFlushes(4)
+                        .setMaxBackgroundCompactions(8);
+            }
+        } else if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_activity_")) {
+            if (Files.exists(Paths.get(optionsFilePath))) {
+                final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
+                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+            } else {
+                options
+                        .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
+                        .setMaxTotalWalSize(64L * 5 * SizeUnit.MB)
+                        .setMaxBackgroundJobs(8)
+                        .setMaxBackgroundFlushes(4)
+                        .setMaxBackgroundCompactions(4);
+            }
+        } else if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_raw_data")) {
+            if (Files.exists(Paths.get(optionsFilePath))) {
+                final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
+                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+            } else {
+                options
+                        .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
+                        .setMaxTotalWalSize(64L * 5 * SizeUnit.MB)
+                        .setMaxBackgroundJobs(8)
+                        .setMaxBackgroundFlushes(4)
+                        .setMaxBackgroundCompactions(4);
+            }
+        } else {
+            if (Files.exists(Paths.get(optionsFilePath))) {
+                final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
+                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+            } else {
+                options
+                        .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
+                        .setMaxTotalWalSize(100L * SizeUnit.MB);
+            }
+        }
         return options.setCreateIfMissing(true);
     }
 
