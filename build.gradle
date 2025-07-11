@@ -57,7 +57,7 @@ repositories {
 
 dependencies {
 
-    implementation 'org.rocksdb:rocksdbjni:6.8.1'
+    implementation 'org.rocksdb:rocksdbjni:10.2.1'
 
     implementation('com.google.guava:guava:33.3.1-jre') {
         exclude group: 'com.google.guava', module: 'failureaccess'

@@ -104,8 +104,10 @@ public class RocksDBLoadOptionsTest extends RocksDataTest {
     private static DBOptions loadOptionsFromFile(Path optionsFilePath, boolean ignoreUnknownOptions) throws RocksDBException {
         List<ColumnFamilyDescriptor> descs = new ArrayList<>();
         DBOptions options = new DBOptions();
-        try {
-            OptionsUtil.loadOptionsFromFile(optionsFilePath.toString(), Env.getDefault(), options, descs, ignoreUnknownOptions);
+        try (var configOptions = new ConfigOptions()
+                .setEnv(Env.getDefault())
+                .setIgnoreUnknownOptions(ignoreUnknownOptions)) {
+            OptionsUtil.loadOptionsFromFile(configOptions, optionsFilePath.toString(), options, descs);
         } catch (Throwable e) {
             try (DBOptions t = options) {}
             throw e;

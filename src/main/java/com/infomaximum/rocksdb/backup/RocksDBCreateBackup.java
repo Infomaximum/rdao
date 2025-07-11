@@ -20,7 +20,7 @@ public class RocksDBCreateBackup {
     public void create(Path backupPath) throws DatabaseException {
         PathUtils.checkPath(backupPath);
 
-        try (BackupableDBOptions dbOptions = new BackupableDBOptions(backupPath.toString());
+        try (BackupEngineOptions dbOptions = new BackupEngineOptions(backupPath.toString());
              BackupEngine backupEngine = BackupEngine.open(Env.getDefault(), dbOptions)) {
 
             final boolean flushBeforeBackup = true;

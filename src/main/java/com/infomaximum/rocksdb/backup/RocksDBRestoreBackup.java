@@ -14,7 +14,7 @@ public class RocksDBRestoreBackup {
 
         RocksDB.loadLibrary();
 
-        try (BackupableDBOptions dbOptions = new BackupableDBOptions(backupPath.toString());
+        try (BackupEngineOptions dbOptions = new BackupEngineOptions(backupPath.toString());
              BackupEngine backupEngine = BackupEngine.open(Env.getDefault(), dbOptions);
              RestoreOptions restoreOptions = new RestoreOptions(false)) {
 
