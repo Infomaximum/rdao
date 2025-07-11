@@ -36,7 +36,6 @@ public class ColumnFamilyConfigMapper {
                 .withSoftPendingCompactionBytesLimit(from.softPendingCompactionBytesLimit())
                 .withLevel0FileNumCompactionTrigger(from.level0FileNumCompactionTrigger())
                 .withLevel0StopWritesTrigger(from.level0StopWritesTrigger())
-                .withMaxWriteBufferNumberToMaintain(from.maxWriteBufferNumberToMaintain())
                 .withLevel0SlowdownWritesTrigger(from.level0SlowdownWritesTrigger())
                 .withTargetFileSizeMultiplier(from.targetFileSizeMultiplier())
                 .withMaxBytesForLevelMultiplier(from.maxBytesForLevelMultiplier())
@@ -97,9 +96,6 @@ public class ColumnFamilyConfigMapper {
         }
         if (from.isContainLevel0StopWritesTrigger()) {
             to.setLevel0StopWritesTrigger(from.getLevel0StopWritesTrigger());
-        }
-        if (from.isContainMaxWriteBufferNumberToMaintain()) {
-            to.setMaxWriteBufferNumberToMaintain(from.getMaxWriteBufferNumberToMaintain());
         }
         if (from.isContainLevel0SlowdownWritesTrigger()) {
             to.setLevel0SlowdownWritesTrigger(from.getLevel0SlowdownWritesTrigger());

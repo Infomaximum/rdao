@@ -69,11 +69,15 @@ public class RocksDataBaseBuilder {
         if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_activity_2025")) {
             if (Files.exists(Paths.get(optionsFilePath))) {
                 final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
-                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+                try (var configOptions = new ConfigOptions()
+                        .setEnv(Env.getDefault())
+                        .setIgnoreUnknownOptions(false)) {
+                    OptionsUtil.loadOptionsFromFile(configOptions, optionsFilePath, options, ignoreDescs);
+                }
             } else {
                 options
                         .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
-                        .setLogger(new org.rocksdb.Logger(options) {
+                        .setLogger(new org.rocksdb.Logger(options.infoLogLevel()) {
                             @Override
                             protected void log(InfoLogLevel infoLogLevel, String logMsg) {
                                 log.info("rocksdb:log:activity_2025: {}: {}", infoLogLevel, logMsg);
@@ -87,7 +91,11 @@ public class RocksDataBaseBuilder {
         } else if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_activity_")) {
             if (Files.exists(Paths.get(optionsFilePath))) {
                 final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
-                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+                try (var configOptions = new ConfigOptions()
+                        .setEnv(Env.getDefault())
+                        .setIgnoreUnknownOptions(false)) {
+                    OptionsUtil.loadOptionsFromFile(configOptions, optionsFilePath, options, ignoreDescs);
+                }
             } else {
                 options
                         .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
@@ -99,7 +107,11 @@ public class RocksDataBaseBuilder {
         } else if (Files.isDirectory(path) && fileName.toString().startsWith("monitoring_raw_data")) {
             if (Files.exists(Paths.get(optionsFilePath))) {
                 final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
-                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+                try (var configOptions = new ConfigOptions()
+                        .setEnv(Env.getDefault())
+                        .setIgnoreUnknownOptions(false)) {
+                    OptionsUtil.loadOptionsFromFile(configOptions, optionsFilePath, options, ignoreDescs);
+                }
             } else {
                 options
                         .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
@@ -111,7 +123,11 @@ public class RocksDataBaseBuilder {
         } else {
             if (Files.exists(Paths.get(optionsFilePath))) {
                 final List<ColumnFamilyDescriptor> ignoreDescs = new ArrayList<>();
-                OptionsUtil.loadOptionsFromFile(optionsFilePath, Env.getDefault(), options, ignoreDescs, false);
+                try (var configOptions = new ConfigOptions()
+                        .setEnv(Env.getDefault())
+                        .setIgnoreUnknownOptions(false)) {
+                    OptionsUtil.loadOptionsFromFile(configOptions, optionsFilePath, options, ignoreDescs);
+                }
             } else {
                 options
                         .setInfoLogLevel(InfoLogLevel.WARN_LEVEL)
