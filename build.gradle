@@ -2,15 +2,15 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'signing'
+    id 'org.jreleaser' version '1.19.0'
     id "org.checkerframework" version "0.6.46" //https://github.com/kelloggm/checkerframework-gradle-plugin
-}
-if (project.hasProperty('ossrhUsername')) {
-    apply from: 'publish.gradle'
+//    id "org.gradlex.extra-java-module-info" version "1.13"
 }
 
+apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"
+
 group 'com.infomaximum'
-version '1.14.16'
+version '1.15.0'
 
 ext.moduleName = 'com.infomaximum.rdao'
 
@@ -83,3 +83,13 @@ dependencies {
 }
 
 task test_performance(type: Test, description: 'Performance test', group: 'Verification') {}
+
+//extraJavaModuleInfo {
+//    module("org.rocksdb:rocksdbjni", "rocksdbjni") {
+//        exports("org.rocksdb")
+//        exports("org.rocksdb.util")
+//    }
+//    module("net.minidev:accessors-smart", "net.minidev.accessorssmart") {
+//        exports("net.minidev.asm")
+//    }
+//}
