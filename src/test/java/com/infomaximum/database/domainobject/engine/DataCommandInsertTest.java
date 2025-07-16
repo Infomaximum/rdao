@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public class DataCommandInsertTest extends StoreFileDataTest {
 
@@ -32,7 +33,7 @@ public class DataCommandInsertTest extends StoreFileDataTest {
     @Test
     public void insertWithTwoValueFields() throws Exception {
         String[] fields = new String[]{"size", "end_time"};
-        Object[] values = new Object[]{3L, Instant.now()};
+        Object[] values = new Object[]{3L, Instant.now().truncatedTo(ChronoUnit.MILLIS)};
         long id = recordSource.executeFunctionTransactional(dataCommand ->
                 dataCommand.insertRecord("StoreFile", "com.infomaximum.store", fields, values));
         assertThatDBContainsRecord(id, fields, values, "StoreFile", "com.infomaximum.store");
@@ -56,12 +57,12 @@ public class DataCommandInsertTest extends StoreFileDataTest {
                 "bytes".getBytes(),
                 false,
                 123.34,
-                Instant.now(),
-                Instant.now(),
+                Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                Instant.now().truncatedTo(ChronoUnit.MILLIS),
                 12L,
                 14L,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
         };
         long id = recordSource.executeFunctionTransactional(dataCommand ->
                 dataCommand.insertRecord("StoreFile", "com.infomaximum.store", fields, values));
