@@ -16,3 +16,4 @@ build/
 hs_err_pid*
 
 gradle.properties
+jreleaser.toml

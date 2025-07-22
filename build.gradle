@@ -2,12 +2,12 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'signing'
+    id 'org.jreleaser' version '1.19.0'
     id "org.checkerframework" version "0.6.46" //https://github.com/kelloggm/checkerframework-gradle-plugin
+//    id "org.gradlex.extra-java-module-info" version "1.13"
 }
-if (project.hasProperty('ossrhUsername')) {
-    apply from: 'publish.gradle'
-}
+
+apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"
 
 group 'com.infomaximum'
 version '1.14.16'
