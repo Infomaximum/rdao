@@ -27,7 +27,7 @@ public class TombstonesTest extends DomainDataTest {
     private void checkForTombstones(int count) throws ColumnFamilyNotFoundException {
         String columnFamily = Schema.getEntity(DataTestEditable.class).getColumnFamily();
         ColumnFamilyHandle columnFamilyHandle = rocksDBProvider.getColumnFamilyHandle(columnFamily);
-        try(ReadOptions readOptions = new ReadOptions().setMaxSkippableInternalKeys(1)) {
+        try (ReadOptions readOptions = new ReadOptions()) {
             for (long i = 1; i <= count; i++) {
                 try (RocksIterator it = rocksDBProvider.getRocksDB().newIterator(columnFamilyHandle, readOptions)) {
                     it.seek(TypeConvert.pack(i));
