@@ -157,6 +157,7 @@ public class PrefixIndexUtilsTest {
     @Test
     public void contains() {
         final String[] texts = {" Привет Медвед infom.COM COM  com  test...2d sop@ru \n \r", "ru.yandex perl"};
+        final String[] textsName = {"Андрей Абрамов Александрович"};
         List<String> tempList = new ArrayList<>();
 
         Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords("прив мед"), texts, tempList))
@@ -176,6 +177,14 @@ public class PrefixIndexUtilsTest {
         Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords(" com ru 2d"), texts, tempList))
                 .isTrue();
         Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords(" com ru yand"), texts, tempList))
+                .isTrue();
+        Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords("Андрей А"), textsName, tempList))
+                .isTrue();
+        Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords("А А"), textsName, tempList))
+                .isTrue();
+        Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords("А Андрей"), textsName, tempList))
+                .isTrue();
+        Assertions.assertThat(PrefixIndexUtils.contains(PrefixIndexUtils.splitSearchingTextIntoWords("А Абрамов"), textsName, tempList))
                 .isTrue();
     }
 
