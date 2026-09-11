@@ -12,6 +12,7 @@ import com.infomaximum.database.utils.IndexService;
 import com.infomaximum.database.utils.TableUtils;
 import com.infomaximum.database.utils.TypeConvert;
 import com.infomaximum.database.utils.key.FieldKey;
+import com.infomaximum.rocksdb.options.columnfamily.ColumnFamilyConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,13 +137,34 @@ public class Schema {
     }
 
     public void createTable(Table table) throws DatabaseException {
+        createTable(table, null, null);
+    }
+
+    /** Creates data and index CFs with the same explicit configuration. */
+    public void createTable(Table table, ColumnFamilyConfig options) throws DatabaseException {
+        createTable(table, options, options);
+    }
+
+    /**
+     * Creates a table with separate data and index CF configurations.
+     * Null uses the provider's configured defaults for the corresponding CF.
+     */
+    public void createTable(Table table, ColumnFamilyConfig dataOptions, ColumnFamilyConfig indexOptions) throws DatabaseException {
         int tableIndex = dbSchema.findTableIndex(table.getName(), table.getNamespace());
         DBTable dbTable;
         if (tableIndex == -1) {
             dbTable = dbSchema.newTable(table.getName(), table.getNamespace(), new ArrayList<>());
 
-            dbProvider.createColumnFamily(dbTable.getDataColumnFamily());
-            dbProvider.createColumnFamily(dbTable.getIndexColumnFamily());
+            if (dataOptions == null) {
+                dbProvider.createColumnFamily(dbTable.getDataColumnFamily());
+            } else {
+                dbProvider.createColumnFamily(dbTable.getDataColumnFamily(), dataOptions);
+            }
+            if (indexOptions == null) {
+                dbProvider.createColumnFamily(dbTable.getIndexColumnFamily());
+            } else {
+                dbProvider.createColumnFamily(dbTable.getIndexColumnFamily(), indexOptions);
+            }
             dbProvider.createSequence(dbTable.getDataColumnFamily());
         } else {
             throw new TableAlreadyExistsException(dbSchema.getTables().get(tableIndex));
