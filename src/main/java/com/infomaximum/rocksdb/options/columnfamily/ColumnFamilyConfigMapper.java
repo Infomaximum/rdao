@@ -3,6 +3,7 @@ package com.infomaximum.rocksdb.options.columnfamily;
 import org.rocksdb.ColumnFamilyOptions;
 
 import java.util.Objects;
+import java.util.Properties;
 
 public class ColumnFamilyConfigMapper {
 
@@ -11,9 +12,26 @@ public class ColumnFamilyConfigMapper {
 
     public static ColumnFamilyOptions toRocksDbOpt(ColumnFamilyConfig from) {
         Objects.requireNonNull(from);
-        ColumnFamilyOptions destination = new ColumnFamilyOptions();
-        setRocksDbOpt(from, destination);
-        return destination;
+        ColumnFamilyOptions destination;
+        if (from.isContainMaxWriteBufferSizeToMaintain()) {
+            // rocksdbjni 10.2.1 has no setter for this option.
+            Properties properties = new Properties();
+            properties.setProperty("max_write_buffer_size_to_maintain",
+                    from.getMaxWriteBufferSizeToMaintain().toString());
+            destination = ColumnFamilyOptions.getColumnFamilyOptionsFromProps(properties);
+            if (destination == null) {
+                throw new IllegalArgumentException("Could not create RocksDB column family options");
+            }
+        } else {
+            destination = new ColumnFamilyOptions();
+        }
+        try {
+            setRocksDbOpt(from, destination);
+            return destination;
+        } catch (RuntimeException | Error e) {
+            destination.close();
+            throw e;
+        }
     }
 
     public static ColumnFamilyConfig fromRocksDbOpt(ColumnFamilyOptions from) {
