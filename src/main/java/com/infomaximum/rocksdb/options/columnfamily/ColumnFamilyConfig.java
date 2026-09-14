@@ -7,7 +7,11 @@ import java.util.Objects;
 
 public class ColumnFamilyConfig implements Serializable {
 
+    // Preserve compatibility with serialized configurations from rdao 1.15.0.
+    private static final long serialVersionUID = -5689997996808589929L;
+
     final Long writeBufferSize;
+    final Long maxWriteBufferSizeToMaintain;
     final Integer maxWriteBufferNumber;
     final Integer minWriteBufferNumberToMerge;
     final Integer numLevels;
@@ -31,6 +35,7 @@ public class ColumnFamilyConfig implements Serializable {
 
     private ColumnFamilyConfig(Builder builder) {
         writeBufferSize = builder.writeBufferSize;
+        maxWriteBufferSizeToMaintain = builder.maxWriteBufferSizeToMaintain;
         maxWriteBufferNumber = builder.maxWriteBufferNumber;
         minWriteBufferNumberToMerge = builder.minWriteBufferNumberToMerge;
         numLevels = builder.numLevels;
@@ -59,6 +64,10 @@ public class ColumnFamilyConfig implements Serializable {
 
     public Long getWriteBufferSize() {
         return writeBufferSize;
+    }
+
+    public Long getMaxWriteBufferSizeToMaintain() {
+        return maxWriteBufferSizeToMaintain;
     }
 
     public Integer getMaxWriteBufferNumber() {
@@ -146,6 +155,10 @@ public class ColumnFamilyConfig implements Serializable {
         return Objects.nonNull(writeBufferSize);
     }
 
+    public boolean isContainMaxWriteBufferSizeToMaintain() {
+        return Objects.nonNull(maxWriteBufferSizeToMaintain);
+    }
+
     public boolean isContainMaxWriteBufferNumber() {
         return Objects.nonNull(maxWriteBufferNumber);
     }
@@ -229,6 +242,7 @@ public class ColumnFamilyConfig implements Serializable {
 
     public static final class Builder {
         private Long writeBufferSize;
+        private Long maxWriteBufferSizeToMaintain;
         private Integer maxWriteBufferNumber;
         private Integer minWriteBufferNumberToMerge;
         private Integer numLevels;
@@ -255,6 +269,21 @@ public class ColumnFamilyConfig implements Serializable {
 
         public Builder withWriteBufferSize(Long writeBufferSize) {
             this.writeBufferSize = writeBufferSize;
+            return this;
+        }
+
+        /**
+         * Sets the target MemTable history size in bytes. {@code -1} uses
+         * maxWriteBufferNumber * writeBufferSize; {@code 0} disables retention
+         * for newly created CFs. {@code null} leaves it unspecified.
+         * Supported by explicit createColumnFamily/createTable configuration;
+         * the existing withConfigColumnFamilies startup map does not apply it.
+         */
+        public Builder withMaxWriteBufferSizeToMaintain(Long maxWriteBufferSizeToMaintain) {
+            if (maxWriteBufferSizeToMaintain != null && maxWriteBufferSizeToMaintain < -1) {
+                throw new IllegalArgumentException("maxWriteBufferSizeToMaintain must be -1 or non-negative");
+            }
+            this.maxWriteBufferSizeToMaintain = maxWriteBufferSizeToMaintain;
             return this;
         }
 

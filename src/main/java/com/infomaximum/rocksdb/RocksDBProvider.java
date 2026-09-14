@@ -110,10 +110,10 @@ public class RocksDBProvider implements DBProvider, AutoCloseable {
 
     @Override
     public void createColumnFamily(String columnFamilyName, ColumnFamilyConfig options) throws DatabaseException {
-        try {
+        try (ColumnFamilyOptions nativeOptions = ColumnFamilyConfigMapper.toRocksDbOpt(options)) {
             ColumnFamilyDescriptor columnFamilyDescriptor = new ColumnFamilyDescriptor(
                     TypeConvert.pack(columnFamilyName),
-                    ColumnFamilyConfigMapper.toRocksDbOpt(options)
+                    nativeOptions
             );
             ColumnFamilyHandle columnFamilyHandle = getRocksDB().createColumnFamily(columnFamilyDescriptor);
             if (columnFamilies.putIfAbsent(columnFamilyName, columnFamilyHandle) != null) {
