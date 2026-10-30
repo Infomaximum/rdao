@@ -59,8 +59,7 @@ dependencies {
 
     implementation 'org.rocksdb:rocksdbjni:10.2.1'
 
-    implementation('com.google.guava:guava:33.3.1-jre') {
-        exclude group: 'com.google.guava', module: 'failureaccess'
+    implementation('com.google.guava:guava:33.7.2-jre') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
         exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
